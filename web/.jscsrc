@@ -6,7 +6,9 @@
   "disallowMultipleVarDecl": false,
   "requireTrailingComma": false,
   "requirePaddingNewLinesAfterBlocks": false,
-  "maximumLineLength": { "value": 200 },
+  "maximumLineLength": {
+    "value": 200
+  },
   "excludeFiles": ["build/**", "node_modules/**"],
-  "esprima": "esprima-fb"
+  "esprima": "babel-jscs"
 }

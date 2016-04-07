@@ -1,47 +1,65 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  devtool: 'eval',
+  devtool: 'source-map',
   entry: [
-      'webpack-dev-server/client?http://localhost:3000',
-      'webpack/hot/only-dev-server',
-      './src/index'
+    './src/index'
   ],
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: 'http://localhost:3000/'
+    filename: '[name].js'
   },
   plugins: [
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin(),
-      new HtmlWebpackPlugin({
-        title: 'Job Hosting',
-        hash: true,
-        inject: false,
-        template: path.join(__dirname, '/assets/index-template.ejs')
-      })
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendors',
+      minChunks(module, count) {
+        return (
+          module.resource &&
+          module.resource.indexOf(path.resolve('node_modules')) === 0
+        );
+      }
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Job Hosting',
+      template: path.join(__dirname, 'assets/index-template.html')
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        warnings: false
+      }
+    }),
+    new ExtractTextPlugin('styles.css')
   ],
   resolve: {
-    extensions: ['', '.js']
+    extensions: ['', '.js'],
+    root: path.join(__dirname, 'src')
   },
   module: {
+    preLoaders: [
+      {
+        test: /\.css$/,
+        loader: 'stripcomment'
+      }
+    ],
     loaders: [{
       test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
+      loaders: ['babel'],
       include: path.join(__dirname, 'src')
     }, {
-      test: /.ejs$/,
-      exclude: /index.html$/,
-      loader: 'ejs'
+      test: /\.scss$/,
+      loader: ExtractTextPlugin.extract('css-loader!sass-loader')
     }, {
-      test: /\.css$/,
-      loader: 'style-loader!css-loader'
-    }, {
-      test: /\.scss/,
-      loader: 'style-loader!css-loader!sass-loader'
+      test: /\.json/,
+      loaders: ['json-loader']
     }]
   }
 };
