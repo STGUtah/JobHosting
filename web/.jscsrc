@@ -1,0 +1,12 @@
+{
+  "preset": "airbnb",
+  "disallowSpacesInAnonymousFunctionExpression": null,
+  "validateLineBreaks": "LF",
+  "validateIndentation": 2,
+  "disallowMultipleVarDecl": false,
+  "requireTrailingComma": false,
+  "requirePaddingNewLinesAfterBlocks": false,
+  "maximumLineLength": { "value": 200 },
+  "excludeFiles": ["build/**", "node_modules/**"],
+  "esprima": "esprima-fb"
+}
