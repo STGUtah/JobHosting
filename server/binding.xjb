@@ -1,0 +1,59 @@
+<jxb:bindings version="2.1"
+  xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  jxb:extensionBindingPrefixes="xjc">
+  <jxb:globalBindings>
+    <xjc:simple/>
+  </jxb:globalBindings>
+  <jxb:bindings schemaLocation="http://schemas.monster.com/current/xsd/ws-security.xsd">
+    <jxb:schemaBindings>
+      <jxb:package name="org.w3.xmlschema"/>
+    </jxb:schemaBindings>
+    <jxb:bindings node="//xs:element[@name='Security']">
+      <jxb:class name="AbstractSecurity"/>
+    </jxb:bindings>
+    <jxb:bindings node="//xs:complexType[@name='UsernameTokenType']">
+      <jxb:class name="AbstractUsernameTokenType"/>
+    </jxb:bindings>
+    <jxb:bindings node="//xs:complexType[@name='PasswordType']">
+      <jxb:class name="AbstractPasswordType"/>
+    </jxb:bindings>
+  </jxb:bindings>
+  <jxb:bindings schemaLocation="http://schemas.monster.com/current/xsd/ws-security-2002-07.xsd">
+    <jxb:schemaBindings>
+      <jxb:package name="org.w3.xmlschema"/>
+    </jxb:schemaBindings>
+    <jxb:bindings node="//xs:element[@name='Security']">
+      <jxb:class name="AbstractOldSecurity"/>
+    </jxb:bindings>
+    <jxb:bindings node="//xs:complexType[@name='UsernameTokenType']">
+      <jxb:class name="AbstractOldUsernameTokenType"/>
+    </jxb:bindings>
+    <jxb:bindings node="//xs:complexType[@name='PasswordType']">
+      <jxb:class name="AbstractOldPasswordType"/>
+    </jxb:bindings>
+  </jxb:bindings>
+  <jxb:bindings schemaLocation="http://schemas.monster.com/current/xsd/ws-security-2004-01.xsd">
+    <jxb:schemaBindings>
+      <jxb:package name="org.w3.xmlschema"/>
+    </jxb:schemaBindings>
+    <jxb:bindings node="//xs:element[@name='Security']">
+      <jxb:class name="AbstractOlderSecurity"/>
+    </jxb:bindings>
+    <jxb:bindings node="//xs:complexType[@name='UsernameTokenType']">
+      <jxb:class name="AbstractOlderUsernameTokenType"/>
+    </jxb:bindings>
+    <jxb:bindings node="//xs:complexType[@name='PasswordType']">
+      <jxb:class name="AbstractOlderPasswordType"/>
+    </jxb:bindings>
+  </jxb:bindings>
+  <jxb:bindings schemaLocation="http://schemas.monster.com/current/xsd/ApplicantScoring.xsd">
+    <jxb:schemaBindings>
+      <jxb:package name="org.w3.xmlschema"/>
+    </jxb:schemaBindings>
+    <jxb:bindings node="//xs:complexType[@name='JobApplicantScoringType']">
+      <jxb:class name="AbstractJobApplicantScoringType"/>
+    </jxb:bindings>
+  </jxb:bindings>
+</jxb:bindings>

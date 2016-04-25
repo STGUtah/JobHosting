@@ -8,6 +8,6 @@ import org.springframework.boot.autoconfigure.session.SessionAutoConfiguration;
 public class JobHostingApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JobHostingApplication.class, args);
+		SpringApplication.run(com.stgconsulting.JobHostingApplication.class, args);
 	}
 }

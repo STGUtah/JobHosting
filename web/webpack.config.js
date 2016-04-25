@@ -20,7 +20,7 @@ module.exports = {
         return (
           module.resource &&
           module.resource.indexOf(path.resolve('node_modules')) === 0
-        );
+        )
       }
     }),
     new HtmlWebpackPlugin({

@@ -22,7 +22,7 @@ module.exports = {
       }
     }),
     new HtmlWebpackPlugin({
-      title: 'Job Hosting',
+      title: 'Boot React',
       template: path.join(__dirname, 'assets/index-template.html')
     })
   ],

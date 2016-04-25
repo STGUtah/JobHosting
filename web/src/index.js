@@ -1,34 +1,23 @@
-import ReactDOM from 'react-dom';
-import React from 'react';
-import { Provider } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import initStore from 'config/store';
-import { setupAxiosInterceptors } from 'rest/axios';
-import DevTools from 'config/devtools';
-import { redirectToLoginWithMessage, logout } from 'reducers/authentication';
-import { setLocale } from 'reducers/locale';
-import { browserHistory } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux';
 
-import { Router } from 'react-router';
-import getRoutes from 'router/router';
-import { registerLocales } from 'config/translation';
+import 'babel-polyfill'
+// React imports
+import React from 'react'
+import { render } from 'react-dom'
 
-const devTools = process.env.NODE_ENV === 'development' ? <DevTools /> : null;
+// app specific imports
+import { history } from './services'
+import routes from './routes/routes'
+import Root from './containers/Root'
+import configureStore from './store/configureStore'
+import rootSaga from './sagas'
 
-const store = initStore();
-const history = syncHistoryWithStore(browserHistory, store);
-registerLocales(store);
+const store = configureStore(window.__INITIAL_STATE__);
+store.runSaga(rootSaga);
 
-const actions = bindActionCreators({ redirectToLoginWithMessage, logout }, store.dispatch);
-setupAxiosInterceptors(() => actions.redirectToLoginWithMessage('login.error.unauthorized'));
-
-ReactDOM.render(
-  <Provider store={store}>
-    <div>
-      {devTools}
-      <Router history={history} routes={getRoutes(actions.logout)}/>
-    </div>
-  </Provider>,
+render(
+  <Root
+    store={store}
+    history={history}
+    routes={routes} />,
   document.getElementById('root')
 );
