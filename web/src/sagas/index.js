@@ -1,11 +1,11 @@
 /* eslint-disable no-constant-condition */
-import { take, put, call, fork, select } from 'redux-saga/effects';
+import { take, put, call, fork, race, select } from 'redux-saga/effects';
 import { api, history } from '../services';
 import * as actions from '../actions';
 import { getUser, getRepo, getStarredByUser, getStargazersByRepo } from '../reducers/selectors';
 
 // each entity defines 3 creators { request, success, failure }
-const { user, repo, starred, stargazers } = actions;
+const { login, user, repo, starred, stargazers } = actions;
 
 // url for first page
 // urls for next pages will be extracted from the successive loadMore* requests
@@ -34,6 +34,8 @@ export const fetchUser       = fetchEntity.bind(null, user, api.fetchUser);
 export const fetchRepo       = fetchEntity.bind(null, repo, api.fetchRepo);
 export const fetchStarred    = fetchEntity.bind(null, starred, api.fetchStarred);
 export const fetchStargazers = fetchEntity.bind(null, stargazers, api.fetchStargazers);
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // load user unless it is cached
 function* loadUser(login, requiredFields) {
@@ -72,6 +74,47 @@ function* loadStargazers(fullName, loadMore) {
     );
 }
 
+// function* loginSaga() {
+//   while(true) {
+//     const { user, pass } = yield take(actions.LOGIN_REQUEST);
+//     try {
+//       let { data } = yield call(request.post, '/login', { user, pass });
+//       yield fork(loadUserData, data.uid);
+//       yield put({ type: actions.LOGIN_SUCCESS, data });
+//     } catch(error) {
+//       yield put({ type: actions.LOGIN_ERROR, error });
+//     }
+//   }
+// }
+
+function* authorize(credentials) {
+  const token = yield call(api.authorize, credentials);
+  if (!token.error) {
+    yield put( login.success(token) );
+    return token;
+  } else {
+    yield put( login.failure(token.error) )
+  }
+}
+
+function* authAndRefreshTokenOnExpiry(credentials) {
+  let token = yield call(authorize, credentials);
+  while(true) {
+    yield call(delay, token.expires_in);
+    token = yield call(authorize, {token});
+  }
+}
+
+// function* loadUserData(uid) {
+//   try {
+//     yield put({ type: USERDATA_REQUEST });
+//     let { data } = yield call(request.get, `/users/${uid}`);
+//     yield put({ type: USERDATA_SUCCESS, data });
+//   } catch(error) {
+//     yield put({ type: USERDATA_ERROR, error });
+//   }
+// }
+
 /******************************************************************************/
 /******************************* WATCHERS *************************************/
 /******************************************************************************/
@@ -81,6 +124,26 @@ function* watchNavigate() {
   while(true) {
     const {pathname} = yield take(actions.NAVIGATE);
     yield history.push(pathname);
+  }
+}
+
+// watches for authenticated user
+function* watchAuth() {
+  while(true) {
+    try {
+      const credentials = yield take(actions.LOGIN_REQUEST);
+
+      yield race([
+        take(actions.LOGOUT),
+        call(authAndRefreshTokenOnExpiry, credentials)
+      ]);
+
+      // user logged out, next while iteration will wait for the
+      // next LOGIN_REQUEST action
+
+    } catch(error) {
+      yield put( login.failure(error) )
+    }
   }
 }
 
@@ -122,6 +185,7 @@ function* watchLoadMoreStargazers() {
 export default function* root() {
   yield [
     fork(watchNavigate),
+    fork(watchAuth),
     fork(watchLoadUserPage),
     fork(watchLoadRepoPage),
     fork(watchLoadMoreStarred),

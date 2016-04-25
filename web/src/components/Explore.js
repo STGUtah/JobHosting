@@ -7,6 +7,7 @@ export default class Explore extends Component {
     super(props);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleGoClick = this.handleGoClick.bind(this);
+    this.handleLoginClick = this.handleLoginClick.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -36,9 +37,17 @@ export default class Explore extends Component {
     this.props.onChange(this.getInputValue());
   }
 
+  handleLoginClick() {
+    this.props.onLoginChange({user: 'username', pass: 'password' });
+  }
+
   render() {
     return (
       <div>
+        <button onClick={this.handleLoginClick}>
+          Login
+        </button>
+        <hr/>
         <p>Type a username or repo full name and hit 'Go':</p>
         <input size="45"
                ref="input"

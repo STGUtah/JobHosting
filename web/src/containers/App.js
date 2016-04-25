@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { navigate, updateRouterState, resetErrorMessage } from '../actions'
+import { navigate, loginRequest, updateRouterState, resetErrorMessage } from '../actions'
 import Explore from '../components/Explore'
 
 
@@ -8,6 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    this.handleLoginChange = this.handleLoginChange.bind(this);
     this.handleDismissClick = this.handleDismissClick.bind(this);
   }
 
@@ -35,6 +36,10 @@ class App extends Component {
     this.props.navigate(`/${nextValue}`);
   }
 
+  handleLoginChange(nextValue) {
+    this.props.loginRequest(nextValue);
+  }
+
   renderErrorMessage() {
     const { errorMessage } = this.props;
     if (!errorMessage) {
@@ -58,7 +63,8 @@ class App extends Component {
     return (
       <div>
         <Explore value={inputValue}
-                 onChange={this.handleChange} />
+                 onChange={this.handleChange}
+                 onLoginChange={this.handleLoginChange}/>
         <hr />
         {this.renderErrorMessage()}
         {children}
@@ -72,6 +78,7 @@ App.propTypes = {
   errorMessage: PropTypes.string,
   inputValue: PropTypes.string.isRequired,
   navigate: PropTypes.func.isRequired,
+  loginRequest: PropTypes.func.isRequired,
   updateRouterState: PropTypes.func.isRequired,
   resetErrorMessage: PropTypes.func.isRequired,
   // Injected by React Router
@@ -87,6 +94,7 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   navigate,
+  loginRequest,
   updateRouterState,
   resetErrorMessage
 })(App);

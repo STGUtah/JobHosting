@@ -9,6 +9,7 @@ function createRequestTypes(base) {
   return res;
 }
 
+export const LOGIN = createRequestTypes('LOGIN');
 export const USER = createRequestTypes('USER');
 export const REPO = createRequestTypes('REPO');
 export const STARRED = createRequestTypes('STARRED');
@@ -16,6 +17,9 @@ export const STARGAZERS = createRequestTypes('STARGAZERS');
 
 export const UPDATE_ROUTER_STATE = 'UPDATE_ROUTER_STATE';
 export const NAVIGATE =  'NAVIGATE';
+export const LOGIN_REQUEST = 'LOGIN_REQUEST';
+export const LOGOUT = 'LOGOUT';
+export const LOAD_USER_DATA =  'LOAD_USER_DATA';
 export const LOAD_USER_PAGE = 'LOAD_USER_PAGE';
 export const LOAD_REPO_PAGE = 'LOAD_REPO_PAGE';
 export const LOAD_MORE_STARRED = 'LOAD_MORE_STARRED';
@@ -26,6 +30,12 @@ export const RESET_ERROR_MESSAGE = 'RESET_ERROR_MESSAGE';
 function action(type, payload = {}) {
   return {type, ...payload};
 }
+
+export const login = {
+  request: credentials => action(LOGIN.REQUEST, credentials),
+  success: (user, pass, response) => action(LOGIN.SUCCESS, {user, pass, response}),
+  failure: (user, pass, error) => action(LOGIN.FAILURE, {user, pass, error})
+};
 
 export const user = {
   request: login => action(USER.REQUEST, {login}),
@@ -53,6 +63,8 @@ export const stargazers = {
 
 export const updateRouterState = state => action(UPDATE_ROUTER_STATE, {state});
 export const navigate = pathname => action(NAVIGATE, {pathname});
+export const loginRequest = (credentials) => action(LOGIN_REQUEST, credentials);
+export const loadUserData = (userId) => action(LOAD_USER_DATA, {userId});
 export const loadUserPage = (login, requiredFields = []) => action(LOAD_USER_PAGE, {login, requiredFields});
 export const loadRepoPage = (fullName, requiredFields = []) => action(LOAD_REPO_PAGE, {fullName, requiredFields});
 export const loadMoreStarred = login => action(LOAD_MORE_STARRED, {login});

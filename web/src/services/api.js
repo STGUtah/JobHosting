@@ -72,6 +72,7 @@ const userSchemaArray = arrayOf(userSchema);
 const repoSchemaArray = arrayOf(repoSchema);
 
 // api services
+export const authorize = credentials => callApi(`authorize`, null);
 export const fetchUser = login => callApi(`users/${login}`, userSchema);
 export const fetchRepo = fullName => callApi(`repos/${fullName}`, repoSchema);
 export const fetchStarred = url => callApi(url, repoSchemaArray);
